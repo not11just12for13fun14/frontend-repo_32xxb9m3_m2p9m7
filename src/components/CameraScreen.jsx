@@ -1,13 +1,11 @@
 import { useRef, useState, useEffect } from 'react'
-import { Camera, RotateCw, Zap } from 'lucide-react'
 
 export default function CameraScreen() {
   const videoRef = useRef(null)
   const mediaStream = useRef(null)
-  const [mode, setMode] = useState('photo') // photo | video
-  const [recording, setRecording] = useState(false)
+  const [mode] = useState('photo') // photo | video
   const [previewURL, setPreviewURL] = useState('')
-  const [hint, setHint] = useState('Show your workout area')
+  const [hint] = useState('Show your workout area')
 
   useEffect(() => {
     startCamera()
@@ -40,6 +38,14 @@ export default function CameraScreen() {
     setPreviewURL(dataUrl)
   }
 
+  const accept = () => {
+    if (previewURL) {
+      sessionStorage.setItem('lastCapture', previewURL)
+    }
+    // navigate via anchor to result block
+    window.location.hash = 'result'
+  }
+
   return (
     <section id="camera" className="max-w-md mx-auto px-0 py-4">
       <div className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black aspect-[9/16] relative">
@@ -60,7 +66,7 @@ export default function CameraScreen() {
             <img src={previewURL} alt="preview" className="flex-1 object-contain" />
             <div className="p-3 grid grid-cols-2 gap-2">
               <button onClick={() => setPreviewURL('')} className="py-2 rounded-xl border border-white/30">Retake</button>
-              <a href="#result" className="py-2 rounded-xl bg-teal-600 text-white text-center">Accept</a>
+              <button onClick={accept} className="py-2 rounded-xl bg-teal-600 text-white text-center">Accept</button>
             </div>
             <p className="text-[11px] text-white/70 text-center pb-3">Photos are used only for verification. Stored on-device unless cloud backup is enabled.</p>
           </div>
